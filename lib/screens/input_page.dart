@@ -1,10 +1,11 @@
+import 'package:bmi_calculator/components/calculator_brain.dart';
+import 'package:bmi_calculator/components/icon_content.dart';
+import 'package:bmi_calculator/components/reusable_card.dart';
+import 'package:bmi_calculator/components/round_button_icon.dart';
 import 'package:bmi_calculator/constants.dart';
-import 'package:bmi_calculator/round_button_icon.dart';
+import 'package:bmi_calculator/screens/content_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'icon_content.dart';
-import 'reusable_card.dart';
 
 enum Gender { Male, Female }
 
@@ -76,7 +77,7 @@ class _InputPageState extends State<InputPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'HELLO',
+                    'Height',
                     style: kLabelTextStyle,
                   ),
                   Row(
@@ -159,55 +160,98 @@ class _InputPageState extends State<InputPage> {
                   ),
                 ),
                 Expanded(
-                    child: ReusableCard(
-                  colour: kInActiveCardColor,
-                  cardChild: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "AGE",
-                        style: kLabelTextStyle,
-                      ),
-                      Text(
-                        age.toString(),
-                        style: kNumberTextStyle,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          RoundIconButton(
-                            icon: FontAwesomeIcons.minus,
-                            onPress: () {
-                              setState(() {
-                                age--;
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          RoundIconButton(
-                            icon: FontAwesomeIcons.plus,
-                            onPress: () {
-                              setState(() {
-                                age++;
-                              });
-                            },
-                            onLongPress: () {
-                              setState(() {
-                                age++;
-                              });
-                            },
-                          )
-                        ],
-                      )
-                    ],
+                  child: ReusableCard(
+                    colour: kInActiveCardColor,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "AGE",
+                          style: kLabelTextStyle,
+                        ),
+                        Text(
+                          age.toString(),
+                          style: kNumberTextStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPress: () {
+                                setState(() {
+                                  age--;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.plus,
+                              onPress: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                              onLongPress: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ))
+                ),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
+          BottomButton(
+            textArea: "CALCULATE",
+            onPress: () {
+              CalculatorBrain calc =
+                  CalculatorBrain(height: height, weight: weight);
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ContentPage(
+                            bmiResult: calc.calculateBMI(),
+                            resultText: calc.getResult,
+                            interPretation: calc.getInterpration,
+                          )));
+            },
+          )
         ],
+      ),
+    );
+  }
+}
+
+class BottomButton extends StatelessWidget {
+  BottomButton({@required this.textArea, @required this.onPress});
+  final String textArea;
+  final Function onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+        height: 60,
+        color: Colors.pink,
+        child: Center(
+            child: Text(
+          textArea,
+          style: kLabelTextStyle.copyWith(
+              fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+        )),
       ),
     );
   }
